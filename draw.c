@@ -57,7 +57,7 @@ void fillArray(char img[h][w]){
 
 void save_img(int i){
     char name[50];
-    sprintf(name, "./test%i_%i.pbm",i,selected_num);
+    sprintf(name, "tagged_img/test%i_%i.pbm",i,selected_num);
     FILE *file = fopen(name, "w");
 
     //change for some fprint type deal
@@ -107,17 +107,6 @@ int check_collision(int x, int y, SDL_Renderer *renderer){
     for(int i=0;i<it;i++){
         if(x >= color_pos_pos[i][0] - 20 && x <= color_pos_pos[i][0] + 20){
             if(y >= color_pos_pos[i][1] - 15 && y <= color_pos_pos[i][1] + 15){
-                /*Message_rect.x = 100;*/
-                /*Message_rect.y = 100;*/
-                /*Message_rect.w = 75;*/
-                /*Message_rect.h = 75;*/
-                /*char itoc[7];*/
-                /*sprintf(itoc, "%i", i);*/
-                /*surfaceMessage = TTF_RenderText_Solid(Sans, itoc, White); */
-                /*Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);*/
-                /*SDL_RenderCopy(renderer, Message, NULL, &Message_rect);*/
-                /*SDL_DestroyTexture(Message);*/
-                /*TTF_CloseFont(Sans);*/
                 selected_num = i;
                 return i; 
             }
@@ -128,7 +117,6 @@ int check_collision(int x, int y, SDL_Renderer *renderer){
 
 
 void draw_colors(SDL_Renderer *renderer){
-    //so much shit
     TTF_Font* Sans = TTF_OpenFont("./NotoSans-Regular.ttf",100);
 
     int it = STATE == COLORS ? NBR_COLORS: NBR_NUMBER;
@@ -233,6 +221,8 @@ int main(int argc, char *argv[]) {
                 save_i++;
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer);
+                draw_colors(renderer);
+                SDL_SetRenderDrawColor(renderer, red.r, red.g, red.b, red.a);
             } else if (e.type == SDL_MOUSEMOTION && (SDL_GetMouseState(&mouseX,&mouseY) & SDL_BUTTON_LMASK)) {
                 mouseX = e.motion.x;
                 mouseY = e.motion.y;
