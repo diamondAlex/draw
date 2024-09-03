@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <math.h>
 
-const int w = 400;
-const int h = 300;
+#define w_i 400
+#define h_i 300
 
 enum state {
     COLORS,
@@ -24,7 +24,7 @@ SDL_Surface* surfaceMessage;
 SDL_Texture* Message;
 
 enum state STATE;
-char img[300][400] = {0};
+char img[h_i][w_i] = {0};
 
 int selected_num = 0;
 
@@ -46,9 +46,9 @@ void drawCircle(SDL_Renderer *renderer, int centerX, int centerY, int radius) {
     }
 }
 
-void fillArray(char img[h][w]){
-    for(int i = 0;i<h;i++){
-        for(int j = 0;j<w;j++){
+void fillArray(char img[h_i][w_i]){
+    for(int i = 0;i<h_i;i++){
+        for(int j = 0;j<w_i;j++){
             img[i][j] = 0;
         }
     }
@@ -60,16 +60,17 @@ void save_img(int i){
     sprintf(name, "tagged_img/test%i_%i.pbm",i,selected_num);
     FILE *file = fopen(name, "w");
 
-    //change for some fprint type deal
-    char *header = "P1\n300 300\n";
+
+    char header[15];
+    sprintf(header,"P1\n%i %i\n",w_i-100,h_i);
     //why 6? I don't know
     char num[6];
 
     fwrite(header,  11, 1, file);
 
-    for(int i = 0;i<h;i++){
+    for(int i = 0;i<h_i;i++){
         //has to be relative to w/h
-        for(int j = 100;j<w;j++){
+        for(int j = 100;j<w_i;j++){
             sprintf(num, "%i", img[i][j]);
             fwrite(num, sizeof num[0], 1, file);
         }
@@ -78,11 +79,13 @@ void save_img(int i){
     }
 }
 
-void convert_to_bitmap(){
-    FILE *file = fopen("./test.img", "w");
+void convert_to_bitmap(int i){
+    char name[1000];
+    sprintf(name, "tagged_img/test%i_%i.img",i,selected_num);
+    FILE *file = fopen(name, "w");
     char num[6];
-    for(int i = 0;i<h;i++){
-        for(int j = 100;j<w;j++){
+    for(int i = 0;i<h_i;i++){
+        for(int j = 100;j<w_i;j++){
             sprintf(num, "%i", img[i][j]);
             fwrite(num, sizeof num[0], 1, file);
         }
@@ -165,7 +168,7 @@ int main(int argc, char *argv[]) {
     SDL_Window *win = SDL_CreateWindow("Draw Circle Around Mouse Position", 
                                        SDL_WINDOWPOS_CENTERED, 
                                        SDL_WINDOWPOS_CENTERED, 
-                                       w, h, 
+                                       w_i, h_i, 
                                        SDL_WINDOW_SHOWN);
     if (win == NULL) {
         printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
@@ -215,8 +218,8 @@ int main(int argc, char *argv[]) {
             }
             else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_s) {
                 printf("saving");
-                save_img(save_i);    
-                convert_to_bitmap();
+                /*save_img(save_i);    */
+                convert_to_bitmap(save_i);
                 fillArray(img);
                 save_i++;
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -226,7 +229,7 @@ int main(int argc, char *argv[]) {
             } else if (e.type == SDL_MOUSEMOTION && (SDL_GetMouseState(&mouseX,&mouseY) & SDL_BUTTON_LMASK)) {
                 mouseX = e.motion.x;
                 mouseY = e.motion.y;
-                if(mouseX<(w) && mouseX>100 && mouseY<h && mouseY>0){
+                if(mouseX<(w_i) && mouseX>100 && mouseY<h_i && mouseY>0){
                     drawCircle(renderer, mouseX, mouseY, radius);
                 }
             }else if(SDL_GetMouseState(&mouseX,&mouseY) & SDL_BUTTON_LMASK){
