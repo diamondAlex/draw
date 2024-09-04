@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <math.h>
 
-#define w_i 400
-#define h_i 300
+#define w_i 25
+#define h_i 25
 
 enum state {
     COLORS,
@@ -62,7 +62,7 @@ void save_img(int i){
 
 
     char header[15];
-    sprintf(header,"P1\n%i %i\n",w_i-100,h_i);
+    sprintf(header,"P1\n%i %i\n",w_i,h_i);
     //why 6? I don't know
     char num[6];
 
@@ -70,7 +70,7 @@ void save_img(int i){
 
     for(int i = 0;i<h_i;i++){
         //has to be relative to w/h
-        for(int j = 100;j<w_i;j++){
+        for(int j = 0;j<w_i;j++){
             sprintf(num, "%i", img[i][j]);
             fwrite(num, sizeof num[0], 1, file);
         }
@@ -85,7 +85,7 @@ void convert_to_bitmap(int i){
     FILE *file = fopen(name, "w");
     char num[6];
     for(int i = 0;i<h_i;i++){
-        for(int j = 100;j<w_i;j++){
+        for(int j = 0;j<w_i;j++){
             sprintf(num, "%i", img[i][j]);
             fwrite(num, sizeof num[0], 1, file);
         }
@@ -126,7 +126,7 @@ void draw_colors(SDL_Renderer *renderer){
     for(short i=0;i<it;i++){
         SDL_SetRenderDrawColor(renderer, color_pos[i][0], color_pos[i][1], color_pos[i][2], 255);
         if(STATE == COLORS){
-            drawCircle(renderer, 30, 50*(i+1), 20);
+            drawCircle(renderer, 30, 50*(i+1), 2);
             color_pos_pos[i][0] = 30;
             color_pos_pos[i][1] = 50*(i+1);
         }else if(STATE == NUMBERS){
@@ -192,7 +192,7 @@ int main(int argc, char *argv[]) {
     SDL_Event e;
     int quit = 0;
     int mouseX, mouseY;
-    int radius = 5; 
+    int radius = 1; 
                 
     const int targetFPS = 50;
     const int frameDelay = 1000 / targetFPS;  
@@ -202,7 +202,7 @@ int main(int argc, char *argv[]) {
 
     int color = -1;
     
-    draw_colors(renderer);
+    /*draw_colors(renderer);*/
 
     SDL_RenderPresent(renderer);
     SDL_SetRenderDrawColor(renderer, red.r, red.g, red.b, red.a);
@@ -224,18 +224,18 @@ int main(int argc, char *argv[]) {
                 save_i++;
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer);
-                draw_colors(renderer);
+                /*draw_colors(renderer);*/
                 SDL_SetRenderDrawColor(renderer, red.r, red.g, red.b, red.a);
             } else if (e.type == SDL_MOUSEMOTION && (SDL_GetMouseState(&mouseX,&mouseY) & SDL_BUTTON_LMASK)) {
                 mouseX = e.motion.x;
                 mouseY = e.motion.y;
-                if(mouseX<(w_i) && mouseX>100 && mouseY<h_i && mouseY>0){
+                if(mouseX<(w_i) && mouseX>0 && mouseY<h_i && mouseY>0){
                     drawCircle(renderer, mouseX, mouseY, radius);
                 }
             }else if(SDL_GetMouseState(&mouseX,&mouseY) & SDL_BUTTON_LMASK){
-                if((color = check_collision(mouseX,mouseY, renderer)) != -1){
-                    SDL_SetRenderDrawColor(renderer, color_pos[color][0],color_pos[color][1],color_pos[color][2],255);
-                }
+                /*if((color = check_collision(mouseX,mouseY, renderer)) != -1){*/
+                    /*SDL_SetRenderDrawColor(renderer, color_pos[color][0],color_pos[color][1],color_pos[color][2],255);*/
+                /*}*/
             }
         }
         frameTime = SDL_GetTicks() - frameStart;
